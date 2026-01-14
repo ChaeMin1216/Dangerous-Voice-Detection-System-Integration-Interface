@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Classification</title>
+</head>
+<body>
+    <h1>Audio Classification Result</h1>
+    <div id="result"></div>
+
+    <script>
+        const ws = new WebSocket('ws://221.156.38.124:15410/ws');
+
+        // ws.onmessage = function(event) {
+        //     console.log(event.data);
+        //     const data = JSON.parse(event.data);
+        //     document.getElementById('result').innerText = 
+        //         `CCTV ID: ${data.device_id}\n` +
+        //         `Class: ${data.result}\n` + 
+        //         `Is Danger: ${data['Is Danger']}\n`;
+        // };
+        ws.onmessage = function(event) {
+            console.log(event.data);
+            const data = JSON.parse(event.data);
+           // console.log(data['Is Danger']);
+
+            const resultText = 
+                `Audio_Id: ${data.Audio_Id}\n` +
+                `Class: ${data.Result}\n` +
+		`File_Name: ${data['File_Name']}\n` +
+		`Time: ${data['Time']}\n`;
+
+            const resultElement = document.getElementById('result');
+            resultElement.innerText = resultText;
+
+            const body = document.body;
+
+            if (data['Is_Danger'] == 1) {
+                body.style.backgroundColor = 'red';
+            } else {
+                body.style.backgroundColor = 'white';
+            }
+        };
+
+        ws.onopen = function() {
+            console.log("WebSocket connection established");
+        };
+
+	ws.onclose = function() {
+            console.log("WebSocket connection closed");
+        };
+    </script>
+</body>
+</html>
